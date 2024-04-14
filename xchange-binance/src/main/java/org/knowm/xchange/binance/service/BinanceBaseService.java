@@ -31,12 +31,21 @@ public class BinanceBaseService extends BaseResilientExchangeService<BinanceExch
       BinanceExchange exchange, ResilienceRegistries resilienceRegistries) {
 
     super(exchange, resilienceRegistries);
+
+    //spot
     this.binance =
         ExchangeRestProxyBuilder.forInterface(
                 BinanceAuthenticated.class, exchange.getExchangeSpecification())
             .build();
+
+    //future
     ExchangeSpecification futuresSpec = exchange.getDefaultExchangeSpecification();
-    ExchangeSpecification inverseFuturesSpec = futuresSpec;
+    this.binanceFutures =
+        ExchangeRestProxyBuilder.forInterface(BinanceFuturesAuthenticated.class, futuresSpec)
+            .build();
+
+    //币本位合约
+    ExchangeSpecification inverseFuturesSpec = exchange.getDefaultExchangeSpecification();
     futuresSpec.setSslUri(
         (exchange.usingSandbox())
             ? BinanceExchange.SANDBOX_FUTURES_URL
@@ -55,9 +64,6 @@ public class BinanceBaseService extends BaseResilientExchangeService<BinanceExch
     } else {
       this.inverseBinanceFutures = null;
     }
-    this.binanceFutures =
-        ExchangeRestProxyBuilder.forInterface(BinanceFuturesAuthenticated.class, futuresSpec)
-            .build();
 
     this.apiKey = exchange.getExchangeSpecification().getApiKey();
     this.signatureCreator =
