@@ -40,18 +40,19 @@ public class BinanceBaseService extends BaseResilientExchangeService<BinanceExch
 
     //future
     ExchangeSpecification futuresSpec = exchange.getDefaultExchangeSpecification();
-    this.binanceFutures =
-        ExchangeRestProxyBuilder.forInterface(BinanceFuturesAuthenticated.class, futuresSpec)
-            .build();
-
-    //币本位合约
-    ExchangeSpecification inverseFuturesSpec = exchange.getDefaultExchangeSpecification();
     futuresSpec.setSslUri(
         (exchange.usingSandbox())
             ? BinanceExchange.SANDBOX_FUTURES_URL
             : (exchange.isPortfolioMarginEnabled())
                 ? BinanceExchange.PORTFOLIO_MARGIN_URL
                 : BinanceExchange.FUTURES_URL);
+    this.binanceFutures =
+        ExchangeRestProxyBuilder.forInterface(BinanceFuturesAuthenticated.class, futuresSpec)
+            .build();
+
+    //币本位合约
+    ExchangeSpecification inverseFuturesSpec = exchange.getDefaultExchangeSpecification();
+
     if (!exchange.isPortfolioMarginEnabled()) {
       inverseFuturesSpec.setSslUri(
           (exchange.usingSandbox())
