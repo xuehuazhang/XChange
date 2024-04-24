@@ -385,6 +385,7 @@ public class BinanceAdapters {
                         : OpenPosition.Type.SHORT)
                 .unRealisedPnl(position.getUnrealizedProfit())
                 .price(position.getEntryPrice())
+                .leverage(position.getLeverage())
                 .instrument(adaptSymbol(position.getSymbol(), true))
                 .build());
       }

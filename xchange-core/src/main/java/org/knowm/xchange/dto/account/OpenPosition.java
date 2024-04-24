@@ -28,17 +28,22 @@ public class OpenPosition implements Serializable {
   /** The unrealised pnl of the position */
   @JsonIgnore private final BigDecimal unRealisedPnl;
 
+  @JsonIgnore private final BigDecimal leverage;
+
+
   public OpenPosition(
       @JsonProperty("instrument") Instrument instrument,
       @JsonProperty("type") Type type,
       @JsonProperty("size") BigDecimal size,
       @JsonProperty("price") BigDecimal price,
+      @JsonProperty("leverage") BigDecimal leverage,
       @JsonProperty("liquidationPrice") BigDecimal liquidationPrice,
       @JsonProperty("unRealisedPnl") BigDecimal unRealisedPnl) {
     this.instrument = instrument;
     this.type = type;
     this.size = size;
     this.price = price;
+    this.leverage = leverage;
     this.liquidationPrice = liquidationPrice;
     this.unRealisedPnl = unRealisedPnl;
   }
@@ -67,6 +72,10 @@ public class OpenPosition implements Serializable {
     return unRealisedPnl;
   }
 
+  public BigDecimal getLeverage() {
+    return leverage;
+  }
+
   @Override
   public boolean equals(final Object o) {
     if (this == o) return true;
@@ -76,13 +85,15 @@ public class OpenPosition implements Serializable {
         && type == that.type
         && Objects.equals(size, that.size)
         && Objects.equals(price, that.price)
+        && Objects.equals(leverage, that.leverage)
         && Objects.equals(liquidationPrice, that.liquidationPrice)
-        && Objects.equals(unRealisedPnl, that.unRealisedPnl);
+        && Objects.equals(unRealisedPnl, that.unRealisedPnl)
+        ;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(instrument, type, size, price, liquidationPrice, unRealisedPnl);
+    return Objects.hash(instrument, type, size, price,leverage, liquidationPrice, unRealisedPnl);
   }
 
   @Override
@@ -96,6 +107,8 @@ public class OpenPosition implements Serializable {
         + size
         + ", price="
         + price
+        + ", leverage="
+        + leverage
         + ", liquidationPrice="
         + liquidationPrice
         + ", unRealisedPnl="
@@ -113,6 +126,7 @@ public class OpenPosition implements Serializable {
     private Type type;
     private BigDecimal size;
     private BigDecimal price;
+    private BigDecimal leverage;
     private BigDecimal liquidationPrice;
     private BigDecimal unRealisedPnl;
 
@@ -123,7 +137,9 @@ public class OpenPosition implements Serializable {
           .size(openPosition.getSize())
           .liquidationPrice(openPosition.getLiquidationPrice())
           .unRealisedPnl(openPosition.getUnRealisedPnl())
-          .price(openPosition.getPrice());
+          .price(openPosition.getPrice())
+          .leverage(openPosition.getLeverage())
+          ;
     }
 
     public Builder instrument(final Instrument instrument) {
@@ -155,9 +171,13 @@ public class OpenPosition implements Serializable {
       this.unRealisedPnl = unRealisedPnl;
       return this;
     }
+    public Builder leverage(final BigDecimal leverage) {
+      this.leverage = leverage;
+      return this;
+    }
 
     public OpenPosition build() {
-      return new OpenPosition(instrument, type, size, price, liquidationPrice, unRealisedPnl);
+      return new OpenPosition(instrument, type, size, price,leverage, liquidationPrice, unRealisedPnl);
     }
   }
 }
